@@ -3,4 +3,4 @@
 
 _npm install_
 
-_Grunt work_
+_Grunt_
