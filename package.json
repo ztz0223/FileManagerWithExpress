@@ -1,0 +1,39 @@
+{
+  "name": "fileManagerWithExpress",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "postinstall": "bower install --config.interactive=false"
+  },
+  "dependencies": {
+    "angular": "~1.5.0",
+    "angular-translate": "~2.9.1",
+    "body-parser": "~1.15.1",
+    "bootstrap": "~3.3.2",
+    "bootswatch": "3.3.6+1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "ejs": "^2.5.1",
+    "express": "~4.13.4",
+    "file-saver": "^1.3.2",
+    "grunt": "^1.0.1",
+    "grunt-concurrent": "^2.3.1",
+    "grunt-contrib-connect": "^1.0.2",
+    "grunt-contrib-nodemon": "^0.5.2",
+    "grunt-node-inspector": "^0.4.2",
+    "jade": "~1.11.0",
+    "jquery": "~2.2.0",
+    "morgan": "~1.7.0",
+    "ng-file-upload": "^12.0.1",
+    "serve-favicon": "~2.3.0"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-uglify": "^2.0.0",
+    "grunt-contrib-watch": "^1.0.0"
+  }
+}

@@ -1,0 +1,178 @@
+swagger: '2.0'
+tags:
+  - name: project
+    description: 表示一个项目
+schemes:
+  - https
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /projects:
+    get:
+      tags:
+        - project
+      summary: List All Projects
+      description: ''
+      operationId: listProjects
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/ProjectInfo'
+        '404':
+          description: 给定的ProjectId无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系客服
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+    post:
+      tags:
+        - project
+      summary: 创建一个新的Project
+      description: ''
+      operationId: createProject
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Project元数据，创建一个Project的必要参数
+          required: true
+          schema:
+            $ref: '#/definitions/ProjectInfo'
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/ProjectInfo'
+        '400':
+          description: 给定的Project参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系客服
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+  '/projects/{projectId}':
+    get:
+      tags:
+        - project
+      summary: 根据ProjectId获取一个Project的详细信息
+      description: ''
+      operationId: getProject
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: 有效的projectId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/ProjectInfo'
+        '404':
+          description: 没有找到ProjectId对应的Project
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系客服
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+    put:
+      tags:
+        - project
+      summary: 更新projectId对应的Project信息
+      description: ''
+      operationId: updateProject
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: 有效的projectId
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: 需要更新的Project元数据
+          required: true
+          schema:
+            $ref: '#/definitions/ProjectInfo'
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/ProjectInfo'
+        '404':
+          description: 没有找到ProjectId对应的Project
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系客服
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+    delete:
+      tags:
+        - project
+      summary: Delete projectId对应的Project
+      description: ''
+      operationId: deleteProject
+      parameters:
+        - name: projectId
+          in: path
+          description: 有效的projectId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/ProjectInfo'
+        '404':
+          description: 没有找到ProjectId对应的Project
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系客服
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+definitions:
+  ErrorInfo:
+    type: object
+    properties:
+      err:
+        type: string
+  ProjectInfo:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      clientId:
+        type: string
+      owner:
+        type: string
+      storageNode:
+        type: string
+      createAt:
+        type: string
+        format: date-time
+      updateAt:
+        type: string
+        format: date-time
+      projectId:
+        type: string

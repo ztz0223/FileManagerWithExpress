@@ -1,0 +1,833 @@
+swagger: '2.0'
+tags:
+  - name: bucket
+    description: 表示文件容器
+  - name: object
+    description: 表示文件对象
+  - name: folder
+    description: 表示文件夹
+  - name: file
+    description: 表示文件
+schemes:
+  - https
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /buckets:
+    get:
+      tags:
+        - bucket
+        - object
+      summary: 获取所有的bucket
+      description: ''
+      operationId: listBucket
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/BucketList'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+    post:
+      tags:
+        - bucket
+        - object
+      summary: '创建一个新的bucket, bucketKey在payload中指定'
+      description: ''
+      operationId: createBucket
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: bucket元数据，指定bucketInf中的必要参数
+          required: true
+          schema:
+            $ref: '#/definitions/BucketInfo'
+      responses:
+        '200':
+          description: 请求操作成功
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+  '/buckets/{bucketKey}/objects':
+    get:
+      tags:
+        - bucket
+        - object
+      summary: 获取指定的存储空间中所有文件对象的元数据
+      description: ''
+      operationId: listObjects
+      produces:
+        - application/json
+      parameters:
+        - name: bucketKey
+          in: path
+          description: 存储空间的键值
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/ObjectList'
+        '400':
+          description: 给定的bucketKey参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+  '/buckets/{bucketKey}/objects/{objectKey}':
+    get:
+      tags:
+        - bucket
+        - object
+      summary: 获取指定的存储空间中一个文件对象。对象的键值为指定的键值
+      description: ''
+      operationId: downloadObjectByObjectKey
+      produces:
+        - application/octet-stream
+      parameters:
+        - name: bucketKey
+          in: path
+          description: 存储空间的键值
+          required: true
+          type: string
+        - name: objectKey
+          in: path
+          description: 文件对象的键值
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 请求操作成功
+        '400':
+          description: 给定的bucketKey和objectKey参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+    post:
+      tags:
+        - bucket
+        - object
+      summary: >-
+        在指定的存储空间中新建一个文件对象。文件对象的键值为指定的键值, body中的文件对象内容格式为
+        application/octet-stream
+      description: ''
+      operationId: uploadObjectRaw
+      consumes:
+        - application/octet-stream
+      produces:
+        - application/json
+      parameters:
+        - name: bucketKey
+          in: path
+          description: 存储空间的键值
+          required: true
+          type: string
+        - name: objectKey
+          in: path
+          description: 文件对象的键值
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: 文件对象内容
+          required: true
+          schema:
+            type: string
+            format: byte
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/ObjectInfo'
+        '400':
+          description: '给定的bucketKey, objectKey参数和文件对象内容无效'
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+  '/buckets/{bucketKey}/objects/{objectKey}/details':
+    get:
+      tags:
+        - bucket
+        - object
+      summary: 获取指定的存储空间中指定文件对象的元数据
+      description: ''
+      operationId: getObjectInfo
+      produces:
+        - application/json
+      parameters:
+        - name: bucketKey
+          in: path
+          description: 存储空间的键值
+          required: true
+          type: string
+        - name: objectKey
+          in: path
+          description: 文件对象的键值
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/ObjectInfo'
+        '400':
+          description: 给定的bucketKey和objectKey参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+  '/objects/{objectId}':
+    get:
+      tags:
+        - object
+      summary: 获取文件对象ID (objectId)对应的文件的内容
+      description: ''
+      operationId: downloadObjectByObjectId
+      produces:
+        - application/octet-stream
+      parameters:
+        - name: objectId
+          in: path
+          description: 文件对象ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 请求操作成功
+        '400':
+          description: 给定的objectId参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+  '/objects/{objectId}/details':
+    get:
+      tags:
+        - object
+      summary: 获取文件对象ID (objectId)对应的文件的元数据
+      description: ''
+      operationId: getObjectMetaById
+      produces:
+        - application/json
+      parameters:
+        - name: objectId
+          in: path
+          description: 文件对象ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/ObjectInfo'
+        '400':
+          description: 给定的objectId参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+  '/projects/{projectId}/file/{fileId}':
+    get:
+      tags:
+        - file
+      summary: 获取指定文件的文件内容
+      description: ''
+      operationId: getFileContent
+      produces:
+        - application/octet-stream
+      parameters:
+        - name: projectId
+          in: path
+          description: Project ID
+          required: true
+          type: string
+        - name: fileId
+          in: path
+          description: 文件ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 请求操作成功
+        '400':
+          description: 给定的参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+    post:
+      tags:
+        - file
+      summary: '在指定的用户空间下,新建一个文件.新建的文件具有版本信息'
+      description: ''
+      operationId: updateFileContent
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: 用户ID
+          required: true
+          type: string
+        - name: fileId
+          in: path
+          description: 文件ID
+          required: true
+          type: string
+        - name: file
+          in: formData
+          description: 文件内容
+          required: true
+          type: file
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/FileInfo'
+        '400':
+          description: 给定的参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+    put:
+      tags:
+        - file
+      summary: 通过文件ID(fileId)修改一个文件的文件名称
+      description: ''
+      operationId: updateFileInfo
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project ID
+          required: true
+          type: string
+        - name: fileId
+          in: path
+          description: 文件ID
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/FileEntry'
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/FileInfo'
+        '400':
+          description: 给定的参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+    delete:
+      tags:
+        - file
+      summary: 通过文件ID(fileId)删除一个文件
+      description: ''
+      operationId: deleteFile
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project ID
+          required: true
+          type: string
+        - name: fileId
+          in: path
+          description: 文件ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 请求操作成功
+        '400':
+          description: 给定的参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+  '/projects/{projectId}/file/{fileId}/info':
+    get:
+      tags:
+        - file
+      summary: 获取指定文件的文件的元数据
+      description: ''
+      operationId: getFileInfo
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project ID
+          required: true
+          type: string
+        - name: fileId
+          in: path
+          description: 文件ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/FileEntry'
+        '400':
+          description: 给定的参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+  '/projects/{projectId}/file/{fileId}/versions/{version}':
+    get:
+      tags:
+        - file
+      summary: 获取指定文件的文件内容
+      description: ''
+      operationId: getFileContentByVersion
+      produces:
+        - application/octet-stream
+      parameters:
+        - name: projectId
+          in: path
+          description: Project ID
+          required: true
+          type: string
+        - name: fileId
+          in: path
+          description: 文件ID
+          required: true
+          type: string
+        - name: version
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 请求操作成功
+        '400':
+          description: 给定的参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+  '/projects/{projectId}/folder/{folderId}':
+    get:
+      tags:
+        - folder
+      summary: 获取一个Folder下面的所有的FileEntry
+      description: ''
+      operationId: listFolder
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project ID
+          required: true
+          type: string
+        - name: folderId
+          in: path
+          description: 指定的文件夹ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/EntryList'
+        '400':
+          description: 给定的参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+    put:
+      tags:
+        - folder
+      summary: 更新一个文件夹（Folder）的名称
+      description: ''
+      operationId: updateFolder
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project ID
+          required: true
+          type: string
+        - name: folderId
+          in: path
+          description: 文件夹ID
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/FileEntry'
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/FolderInfo'
+        '400':
+          description: 给定的参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+    delete:
+      tags:
+        - folder
+      summary: 删除一个Folder
+      description: ''
+      operationId: deleteFolder
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project ID
+          required: true
+          type: string
+        - name: folderId
+          in: path
+          description: 文件夹ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 请求操作成功
+        '400':
+          description: 给定的参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+  '/projects/{projectId}/parent/{parentId}/file':
+    post:
+      tags:
+        - file
+      summary: 在指定的用户空间和父级文件下创建一个文件
+      description: ''
+      operationId: createFile
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project ID
+          required: true
+          type: string
+        - name: parentId
+          in: path
+          description: 文件父级目录的ID
+          required: true
+          type: string
+        - name: file
+          in: formData
+          description: 文件内容
+          required: true
+          type: file
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/FileInfo'
+        '400':
+          description: 给定的参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+  '/projects/{projectId}/parent/{parentId}/file/versions/{version}':
+    post:
+      tags:
+        - file
+      summary: 在指定的用户空间和父级文件下创建一个文件 with version
+      description: ''
+      operationId: createFileByVersion
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project ID
+          required: true
+          type: string
+        - name: parentId
+          in: path
+          description: 文件父级目录的ID
+          required: true
+          type: string
+        - name: version
+          in: path
+          required: true
+          type: string
+        - name: file
+          in: formData
+          description: 文件内容
+          required: true
+          type: file
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/FileInfo'
+        '400':
+          description: 给定的参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+  '/projects/{projectId}/parent/{parentId}/folder/{folderName}':
+    post:
+      tags:
+        - folder
+      summary: 在指定的文件夹下面创建一个新的文件夹(folderName)
+      description: ''
+      operationId: createFolder
+      produces:
+        - application/json
+      parameters:
+        - name: projectId
+          in: path
+          description: Project ID
+          required: true
+          type: string
+        - name: folderName
+          in: path
+          description: 新建Folder的名称
+          required: true
+          type: string
+        - name: parentId
+          in: path
+          description: 新建Folder的父Folder的ID
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 请求操作成功
+          schema:
+            $ref: '#/definitions/FolderInfo'
+        '400':
+          description: 给定的参数无效
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+        '500':
+          description: 服务出现内部异常，请联系技术支持
+          schema:
+            $ref: '#/definitions/ErrorInfo'
+definitions:
+  FileInfo:
+    type: object
+    properties:
+      fileId:
+        type: string
+      fileName:
+        type: string
+      verisons:
+        type: array
+        uniqueItems: true
+        items:
+          type: object
+  ErrorInfo:
+    type: object
+    properties:
+      err:
+        type: string
+  FileVersion:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      entryId:
+        type: string
+      version:
+        type: string
+      createTime:
+        type: string
+        format: date-time
+  ObjectList:
+    type: object
+    properties:
+      size:
+        type: integer
+        format: int64
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/ObjectInfo'
+  FileEntry:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      clientId:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+      entryId:
+        type: string
+      owner:
+        type: string
+      projectId:
+        type: string
+      size:
+        type: integer
+        format: int64
+      createTime:
+        type: string
+        format: date-time
+      updateTime:
+        type: string
+        format: date-time
+      currentVersion:
+        type: string
+      versions:
+        type: array
+        uniqueItems: true
+        items:
+          $ref: '#/definitions/FileVersion'
+      parentEntry:
+        $ref: '#/definitions/FileEntry'
+      childEntries:
+        type: array
+        uniqueItems: true
+        items:
+          type: object
+  EntryList:
+    type: object
+    properties:
+      entryList:
+        type: array
+        items:
+          $ref: '#/definitions/FileEntry'
+  BucketInfo:
+    type: object
+    required:
+      - bucketKey
+    properties:
+      id:
+        type: string
+      bucketKey:
+        type: string
+      owner:
+        type: string
+      client_id:
+        type: string
+      createAt:
+        type: string
+        format: date-time
+  FolderInfo:
+    type: object
+    properties:
+      folderId:
+        type: string
+      errMsg:
+        type: string
+  BucketList:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/BucketInfo'
+  ObjectInfo:
+    type: object
+    properties:
+      objectId:
+        type: string
+      clientId:
+        type: string
+      bucketKey:
+        type: string
+      objectKey:
+        type: string
+      owner:
+        type: string
+      sha1:
+        type: string
+      size:
+        type: integer
+        format: int64
+      contentType:
+        type: string
+      location:
+        type: string
+      createAt:
+        type: string
+        format: date-time
+      path:
+        type: string
