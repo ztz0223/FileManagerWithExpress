@@ -40,8 +40,8 @@
                 return this.apiHandler.move(fileManagerConfig.moveUrl, items, this.getPath(path));
             };
 
-            ApiMiddleware.prototype.remove = function (files) {
-                return this.apiHandler.remove(fileManagerConfig.removeUrl, files);
+            ApiMiddleware.prototype.remove = function (packageId, files) {
+                return this.apiHandler.remove(fileManagerConfig.removeUrl, packageId, files);
             };
 
             ApiMiddleware.prototype.upload = function (files, path) {

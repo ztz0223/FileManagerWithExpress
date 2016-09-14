@@ -123,17 +123,28 @@
                     return deferred.promise;
                 };
 
-                ApiHandler.prototype.remove = function (apiUrl, items) {
-                    var self = this;
-                    if(items[0].model.type === 'pkg') {
-                        return self.removePkg(apiUrl, items);
-                    }
-                    else {
-                        return self.removeFile(apiUrl, items);
-                    }
+                ApiHandler.prototype.remove = function (apiUrl, packageId, items) {
+                    return this.removePkgOrFile(apiUrl, packageId, items);
                 };
 
-                ApiHandler.prototype.removePkg = function (apiUrl, items) {
+                ApiHandler.prototype.buildUrl = function (apiUrl, packageId, item) {
+                    var url = apiUrl;
+                    var type = item.model.type;
+
+                    if(type === 'pkg') {
+                        url = apiUrl + '/' + item.model.id;
+                    }
+                    else if (type === 'dir') {
+                        url = apiUrl + '/' + packageId  + '/folder/' + item.model.id;
+                    }
+                    else if (type === 'file') {
+                        url = apiUrl + '/' + packageId  + '/file/' + item.model.id;
+                    }
+
+                    return url;
+                };
+
+                ApiHandler.prototype.removePkgOrFile = function (apiUrl, packageId, items) {
                     var self = this;
                     var deferred = $q.defer();
 
@@ -143,7 +154,7 @@
                     var httpFn = function (items) {
                         var allProm = [];
                         items.forEach(function (item) {
-                            var url = apiUrl + '/' + item.model.id;
+                            var url = self.buildUrl(apiUrl, packageId, item);
                             allProm.push($http.delete(url));
                         });
 
@@ -158,31 +169,14 @@
                                 self.deferredHandler(data, deferred, data.status);
                             },
                             function (result) {
-                                data.status = result[0].status || 404;
-                                data.result.error = result[0].statusText;
+                                data.status = result.status || 404;
+                                data.result.error = result.statusText;
                                 self.deferredHandler(data, deferred, data.status, $translate.instant('error_deleting'));
                             })
                         ['finally'](function () {
                         self.inprocess = false;
                     });
 
-                    return deferred.promise;
-                };
-
-                // remove file or dir
-                ApiHandler.prototype.removeFile = function (apiUrl, items) {
-                    var self = this;
-                    var deferred = $q.defer();
-
-                    self.inprocess = true;
-                    self.error = '';
-                    $http.post(apiUrl, data).success(function (data, code) {
-                        self.deferredHandler(data, deferred, code);
-                    }).error(function (data, code) {
-                        self.deferredHandler(data, deferred, code, $translate.instant('error_deleting'));
-                    })['finally'](function () {
-                        self.inprocess = false;
-                    });
                     return deferred.promise;
                 };
 

@@ -310,7 +310,7 @@
             };
 
             $scope.remove = function () {
-                $scope.apiMiddleware.remove($scope.temps).then(function () {
+                $scope.apiMiddleware.remove($scope.fileNavigator.packageId, $scope.temps).then(function () {
                     $scope.fileNavigator.refresh();
                     $scope.modal('remove', true);
                 });
