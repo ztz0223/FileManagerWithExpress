@@ -27,5 +27,15 @@
                     return deferred.promise;
                 };
 
+                this.getToken = function () {
+                    var token = localStorageService.get(fileManagerConfig.tokenKeyName);
+
+                    if(token === null) {
+                        console.log('Token is null');
+                    }
+
+                    return token;
+                };
+
             }]);
 })(angular, $);

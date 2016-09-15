@@ -12,22 +12,12 @@
             //$http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
             console.log('file manager run');
         }])
-        .service('apiHandler', ['$http', '$q', '$window', '$translate', 'fileManagerConfig', 'Upload', 'uuid4', 'localStorageService',
-            function ($http, $q, $window, $translate, fileManagerConfig, Upload, uuid4, localStorageService) {
+        .service('apiHandler', ['$http', '$q', '$window', '$translate', 'fileManagerConfig', 'Upload', 'uuid4', 'tokenUpdate',
+            function ($http, $q, $window, $translate, fileManagerConfig, Upload, uuid4, tokenUpdate) {
                 var ApiHandler = function () {
                     this.inprocess = false;
                     this.asyncSuccess = false;
                     this.error = '';
-                };
-
-                ApiHandler.prototype.getToken = function () {
-                    var token = localStorageService.get(fileManagerConfig.tokenKeyName);
-
-                    if(token === null) {
-                        console.log('Token is null');
-                    }
-
-                    return token;
                 };
 
                 ApiHandler.prototype.deferredHandler = function (data, deferred, code, defaultMsg) {
@@ -79,7 +69,7 @@
                     self.inprocess = true;
                     self.error = '';
 
-                    var token = self.getToken();
+                    var token = tokenUpdate.getToken();
 
                     $http.get(apiUrl).success(function (data, code) {
                         // Set the type of the file as 'pkg' by force
