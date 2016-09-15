@@ -7,9 +7,14 @@
 
             console.log('file manager config');
         }])
-        .run([/*'$httpProvider', */'$http', function (/*$httpProvider,*/ $http) {
+        .run(['localStorageService', 'fileManagerConfig', 'tokenUpdate', function (localStorageService, fileManagerConfig, tokenUpdate) {
 
-            //$http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+            // Each time load the website, clear the storage
+            localStorageService.remove(fileManagerConfig.tokenKeyName);
+
+            //Launch update token job
+            tokenUpdate.launchUpdate();
+
             console.log('file manager run');
         }])
         .service('apiHandler', ['$http', '$q', '$window', '$translate', 'fileManagerConfig', 'Upload', 'uuid4', 'tokenUpdate',
@@ -69,20 +74,22 @@
                     self.inprocess = true;
                     self.error = '';
 
-                    var token = tokenUpdate.getToken();
+                    tokenUpdate.getTokenSync().then(
+                        function (token) {
+                            $http.get(apiUrl).success(function (data, code) {
+                                // Set the type of the file as 'pkg' by force
+                                data.items.forEach(function (item) {
+                                    item.type = 'pkg';
+                                });
 
-                    $http.get(apiUrl).success(function (data, code) {
-                        // Set the type of the file as 'pkg' by force
-                        data.items.forEach(function (item) {
-                            item.type = 'pkg';
-                        });
-
-                        dfHandler(data, deferred, code);
-                    }).error(function (data, code) {
-                        dfHandler(data, deferred, code, 'Unknown error listing, check the response');
-                    })['finally'](function () {
-                        self.inprocess = false;
-                    });
+                                dfHandler(data, deferred, code);
+                            }).error(function (data, code) {
+                                dfHandler(data, deferred, code, 'Unknown error listing, check the response');
+                            })['finally'](function () {
+                                self.inprocess = false;
+                            });
+                        }
+                    );
 
                     return deferred.promise;
                 };

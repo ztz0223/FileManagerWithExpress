@@ -1,8 +1,8 @@
 (function (angular, $) {
     'use strict';
     angular.module('FileManagerApp').controller('FileManagerCtrl', [
-        '$scope', '$rootScope', '$window', '$translate', '$interval', 'fileManagerConfig', 'item', 'fileNavigator', 'apiMiddleware', 'tokenUpdate',
-        function ($scope, $rootScope, $window, $translate, $interval, fileManagerConfig, Item, FileNavigator, ApiMiddleware, tokenUpdate) {
+        '$scope', '$rootScope', '$window', '$translate', '$interval', 'fileManagerConfig', 'item', 'fileNavigator', 'apiMiddleware',
+        function ($scope, $rootScope, $window, $translate, $interval, fileManagerConfig, Item, FileNavigator, ApiMiddleware) {
 
             var $storage = $window.localStorage;
             $scope.config = fileManagerConfig;
@@ -404,16 +404,7 @@
 
             $scope.changeLanguage(getQueryParam('lang'));
             $scope.isWindows = getQueryParam('server') === 'Windows';
-
-            tokenUpdate.updateToken()
-                .then(function () {
-                    $scope.fileNavigator.refresh();
-                });
-
-            $interval(function () {
-                console.log('Update token timer!');
-                tokenUpdate.updateToken();
-            }, fileManagerConfig.tokenUpdateInterval);
+            $scope.fileNavigator.refresh();
 
         }]);
 })(angular, jQuery);
