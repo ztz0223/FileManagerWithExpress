@@ -413,7 +413,7 @@
             $interval(function () {
                 console.log('Update token timer!');
                 tokenUpdate.updateToken();
-            }, 5000);
+            }, fileManagerConfig.tokenUpdateInterval);
 
         }]);
 })(angular, jQuery);
