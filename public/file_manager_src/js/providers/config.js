@@ -24,6 +24,9 @@
             extractUrl: xSite + 'extract',
             permissionsUrl: xSite + 'permission',
             projectUrl: xSite + 'projects',
+            tokenUrl: xSite + 'token',
+
+            tokenKeyName: 'FileManagerToken',
 
             searchForm: true,
             sidebar: true,

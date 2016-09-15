@@ -6,7 +6,7 @@
 var ApplicationConfiguration = (function () {
     // Init module configuration options
     var applicationModuleName = 'FileManagerApp';
-    var applicationModuleVendorDependencies = ['pascalprecht.translate', 'ngFileUpload', 'uuid4'];
+    var applicationModuleVendorDependencies = ['pascalprecht.translate', 'ngFileUpload', 'uuid4', 'LocalStorageModule'];
 
     // Add a new vertical module
     var registerModule = function (moduleName, dependencies) {

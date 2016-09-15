@@ -4,13 +4,30 @@
         .config(['$httpProvider', function ($httpProvider) {
             $httpProvider.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded';
             $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+            console.log('file manager config');
         }])
-        .service('apiHandler', ['$http', '$q', '$window', '$translate', 'Upload', 'uuid4',
-            function ($http, $q, $window, $translate, Upload, uuid4) {
+        .run([/*'$httpProvider', */'$http', function (/*$httpProvider,*/ $http) {
+
+            //$http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+            console.log('file manager run');
+        }])
+        .service('apiHandler', ['$http', '$q', '$window', '$translate', 'fileManagerConfig', 'Upload', 'uuid4', 'localStorageService',
+            function ($http, $q, $window, $translate, fileManagerConfig, Upload, uuid4, localStorageService) {
                 var ApiHandler = function () {
                     this.inprocess = false;
                     this.asyncSuccess = false;
                     this.error = '';
+                };
+
+                ApiHandler.prototype.getToken = function () {
+                    var token = localStorageService.get(fileManagerConfig.tokenKeyName);
+
+                    if(token === null) {
+                        console.log('Token is null');
+                    }
+
+                    return token;
                 };
 
                 ApiHandler.prototype.deferredHandler = function (data, deferred, code, defaultMsg) {
@@ -61,6 +78,8 @@
 
                     self.inprocess = true;
                     self.error = '';
+
+                    var token = self.getToken();
 
                     $http.get(apiUrl).success(function (data, code) {
                         // Set the type of the file as 'pkg' by force
