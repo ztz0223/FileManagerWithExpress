@@ -217,6 +217,10 @@
                 return $scope.fileNavigator.currentPath.length === 0;
             };
 
+            $scope.isUnderPackage = function () {
+                return $scope.fileNavigator.packageId == $scope.fileNavigator.folderId;
+            };
+
             $scope.edit = function () {
                 $scope.apiMiddleware.edit($scope.singleSelection()).then(function () {
                     $scope.modal('edit', true);
@@ -379,7 +383,7 @@
             };
 
             $scope.uploadFiles = function () {
-                $scope.apiMiddleware.upload($scope.uploadFileList, $scope.fileNavigator.currentPath).then(function () {
+                $scope.apiMiddleware.upload($scope.uploadFileList, $scope.fileNavigator.packageId, $scope.fileNavigator.folderId).then(function () {
                     $scope.fileNavigator.refresh();
                     $scope.uploadFileList = [];
                     $scope.modal('uploadfile', true);

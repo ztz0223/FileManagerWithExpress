@@ -10,7 +10,7 @@
             defaultLang: 'zh',
 
             listUrl: xSite + 'list',
-            uploadUrl: xSite + 'upload',
+            uploadUrl: xSite + 'projects',
             renameUrl: xSite + 'rename',
             copyUrl: xSite + 'copy',
             moveUrl: xSite + 'move',
