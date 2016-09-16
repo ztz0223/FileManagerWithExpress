@@ -100,7 +100,7 @@
             new_folder: 'New folder',
             new_package: 'New package',
             package_name: 'Package name',
-            download_as_zip: 'Download as ZIP'
+            download_multi_file: 'Download multiple files'
         });
 
         $translateProvider.translations('zh', {
@@ -200,7 +200,7 @@
             new_folder: '新文件夹',
             new_package: '新工程',
             package_name: '工程名',
-            download_as_zip: '下载的ZIP'
+            download_multi_file: '下载多个文件'
         });
     }]);
 })(angular);

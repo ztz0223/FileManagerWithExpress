@@ -177,8 +177,8 @@
                 ApiHandler.prototype.buildDownloadUrl = function (apiUrl, packageId, fileId, item) {
                     var url;
 
-                    if(item && item.id) {
-                        url =  apiUrl + '/' + packageId + '/file/' + item.id;
+                    if(item && item.model && item.model.id) {
+                        url =  apiUrl + '/' + packageId + '/file/' + item.model.id;
                     }
                     else {
                         url =  apiUrl + '/' + packageId + '/file/' + fileId;
@@ -348,7 +348,7 @@
                     return path && [apiUrl, $.param(data)].join('?');
                 };
 
-                ApiHandler.prototype.download = function (apiUrl, toPackageId, toFileId, toFilename, downloadByAjax, forceNewWindow) {
+                ApiHandler.prototype.download = function (apiUrl, toPackageId, toFileId, toFilename) {
                     var self = this;
                     var deferred = $q.defer();
                     self.inprocess = true;
@@ -378,26 +378,63 @@
                     return deferred.promise;
                 };
 
-                ApiHandler.prototype.downloadMultiple = function (apiUrl, items, toFilename, downloadByAjax, forceNewWindow) {
-                    var self = this;
+                ApiHandler.prototype.handleMultipleItems = function (items, fn) {
                     var deferred = $q.defer();
-                    var data = {
-                        action: 'downloadMultiple',
-                        items: items,
-                        toFilename: toFilename
+                    var counter = 0;
+                    var result = [];
+
+                    items.forEach(function (item) {
+                        counter++;
+                        fn(item).then(function (data) {
+                            result.push(data);
+                            if (!(--counter)) {
+                                deferred.resolve(result);
+                            }
+                        }, function (data, code) {
+                            deferred.reject(data, code);
+                        });
+                    });
+
+                    if (counter === 0) {
+                        deferred.resolve(result);
+                    }
+
+                    return deferred.promise;
+                };
+
+                ApiHandler.prototype.downloadMultiple = function (apiUrl, toPackageId, items) {
+                    var self = this;
+
+                    var downloadSingle = function (item) {
+
+                        var toFilename = item.model && item.model.name || 'DownloadFIle';
+                        var deferred = $q.defer();
+                        var url = self.buildDownloadUrl(apiUrl, toPackageId, null, item);
+
+                        $http.get(url).success(function (data) {
+                            var bin = new $window.Blob([data]);
+                            deferred.resolve({status: '200'});
+                            saveAs(bin, toFilename);
+                        }).error(function (data, code) {
+                            deferred.reject(data, code);
+                        });
+
+                        return deferred.promise;
                     };
-                    var url = [apiUrl, $.param(data)].join('?');
+
+                    var deferred = $q.defer();
 
                     self.inprocess = true;
-                    $http.get(apiUrl).success(function (data) {
-                        var bin = new $window.Blob([data]);
-                        deferred.resolve(data);
-                        saveAs(bin, toFilename);
-                    }).error(function (data, code) {
-                        self.deferredHandler(data, deferred, code, $translate.instant('error_downloading'));
-                    })['finally'](function () {
+                    self.handleMultipleItems(items, downloadSingle).then( function (result) {
+                            deferred.resolve(result);
+                        },
+                        function (data, code) {
+                            self.deferredHandler(data, deferred, code, $translate.instant('error_downloading'));
+                        }
+                    )['finally'](function () {
                         self.inprocess = false;
                     });
+
                     return deferred.promise;
                 };
 

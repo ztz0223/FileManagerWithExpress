@@ -47,7 +47,7 @@
                 compressChooseName: false,
                 extract: false,
                 download: true,
-                downloadMultiple: false,
+                downloadMultiple: true,
                 preview: false,
                 remove: true,
                 createFolder: true,

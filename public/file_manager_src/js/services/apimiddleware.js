@@ -97,9 +97,7 @@
                 return this.apiHandler.downloadMultiple(
                     fileManagerConfig.downloadMultipleUrl,
                     toPackageId,
-                    files,
-                    fileManagerConfig.downloadFilesByAjax,
-                    forceNewWindow
+                    files
                 );
             };
 
