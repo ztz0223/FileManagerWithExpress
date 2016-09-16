@@ -74,9 +74,9 @@
                 return this.apiHandler.getUrl(fileManagerConfig.downloadFileUrl, itemPath);
             };
 
-            ApiMiddleware.prototype.download = function (item, forceNewWindow) {
+            ApiMiddleware.prototype.download = function (item, toPackageId, forceNewWindow) {
                 //TODO: add spinner to indicate file is downloading
-                var itemPath = this.getFilePath(item);
+                var toFileId = item.model.id;
                 var toFilename = item.model.name;
 
                 if (item.isFolder()) {
@@ -85,22 +85,19 @@
 
                 return this.apiHandler.download(
                     fileManagerConfig.downloadFileUrl,
-                    itemPath,
+                    toPackageId,
+                    toFileId,
                     toFilename,
                     fileManagerConfig.downloadFilesByAjax,
                     forceNewWindow
                 );
             };
 
-            ApiMiddleware.prototype.downloadMultiple = function (files, forceNewWindow) {
-                var items = this.getFileList(files);
-                var timestamp = new Date().getTime().toString().substr(8, 13);
-                var toFilename = timestamp + '-' + fileManagerConfig.multipleDownloadFileName;
-
+            ApiMiddleware.prototype.downloadMultiple = function (files, toPackageId, forceNewWindow) {
                 return this.apiHandler.downloadMultiple(
                     fileManagerConfig.downloadMultipleUrl,
-                    items,
-                    toFilename,
+                    toPackageId,
+                    files,
                     fileManagerConfig.downloadFilesByAjax,
                     forceNewWindow
                 );

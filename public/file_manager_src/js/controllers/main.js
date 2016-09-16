@@ -239,9 +239,9 @@
                     return;
                 }
                 if (item) {
-                    return $scope.apiMiddleware.download(item);
+                    return $scope.apiMiddleware.download(item, $scope.fileNavigator.packageId);
                 }
-                return $scope.apiMiddleware.downloadMultiple($scope.temps);
+                return $scope.apiMiddleware.downloadMultiple($scope.temps, $scope.fileNavigator.packageId);
             };
 
             $scope.copy = function () {

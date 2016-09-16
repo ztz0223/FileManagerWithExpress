@@ -174,6 +174,11 @@
                     return url;
                 };
 
+                ApiHandler.prototype.buildDownloadUrl = function (apiUrl, packageId, fileId) {
+                    var url =  apiUrl + '/' + packageId + '/file/' + fileId;
+                    return url;
+                };
+
                 ApiHandler.prototype.removePkgOrFile = function (apiUrl, packageId, items) {
                     var self = this;
                     var deferred = $q.defer();
@@ -336,7 +341,7 @@
                     return path && [apiUrl, $.param(data)].join('?');
                 };
 
-                ApiHandler.prototype.download = function (apiUrl, itemPath, toFilename, downloadByAjax, forceNewWindow) {
+                ApiHandler.prototype.download = function (apiUrl, toPackageId, toFileId, toFilename, downloadByAjax, forceNewWindow) {
                     var self = this;
                     if (!downloadByAjax || forceNewWindow) {
                         $window.console.log('Your browser dont support ajax download, downloading by default');
@@ -346,11 +351,9 @@
                     var deferred = $q.defer();
                     self.inprocess = true;
                     var config = {
-                        url: apiUrl,
                         method: 'GET',
                         params: {
-                            user: 'None',
-                            fullPath: itemPath
+                            user: 'None'
                         }
                     };
                     /*
@@ -359,7 +362,8 @@
                      * Or: $http.get(apiUrl, config).success
                      * For the root cause: $http.get is a shortcut method for $http({ method: 'GET' }), and expects the URL as the first parameter.
                      */
-                    $http.get(apiUrl, config).success(function (data) {
+                    var url = self.buildDownloadUrl(apiUrl, toPackageId, toFileId);
+                    $http.get(url, config).success(function (data) {
                         var bin = new $window.Blob([data]);
                         deferred.resolve(data);
                         // Using file-saver library to handle saving work.
