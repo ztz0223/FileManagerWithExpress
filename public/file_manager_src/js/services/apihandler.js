@@ -174,8 +174,15 @@
                     return url;
                 };
 
-                ApiHandler.prototype.buildDownloadUrl = function (apiUrl, packageId, fileId) {
-                    var url =  apiUrl + '/' + packageId + '/file/' + fileId;
+                ApiHandler.prototype.buildDownloadUrl = function (apiUrl, packageId, fileId, item) {
+                    var url;
+
+                    if(item && item.id) {
+                        url =  apiUrl + '/' + packageId + '/file/' + item.id;
+                    }
+                    else {
+                        url =  apiUrl + '/' + packageId + '/file/' + fileId;
+                    }
                     return url;
                 };
 
@@ -343,11 +350,6 @@
 
                 ApiHandler.prototype.download = function (apiUrl, toPackageId, toFileId, toFilename, downloadByAjax, forceNewWindow) {
                     var self = this;
-                    if (!downloadByAjax || forceNewWindow) {
-                        $window.console.log('Your browser dont support ajax download, downloading by default');
-                        return !!$window.open(url, '_blank', '');
-                    }
-
                     var deferred = $q.defer();
                     self.inprocess = true;
                     var config = {
@@ -385,11 +387,6 @@
                         toFilename: toFilename
                     };
                     var url = [apiUrl, $.param(data)].join('?');
-
-                    if (!downloadByAjax || forceNewWindow) {
-                        $window.console.log('Your browser dont support ajax download, downloading by default');
-                        return !!$window.open(url, '_blank', '');
-                    }
 
                     self.inprocess = true;
                     $http.get(apiUrl).success(function (data) {
