@@ -75,8 +75,14 @@
                     self.error = '';
 
                     tokenUpdate.getTokenSync().then(
-                        function () {
-                            $http.get(apiUrl).success(function (data, code) {
+                        function (token) {
+                            var config = {
+                                headers: {
+                                    'Authentication': token.type + ' ' + token.access_token
+                                }
+                            };
+
+                            $http.get(apiUrl, config).success(function (data, code) {
                                 // Set the type of the file as 'pkg' by force
                                 data.items.forEach(function (item) {
                                     item.type = 'pkg';

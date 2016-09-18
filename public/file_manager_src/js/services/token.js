@@ -11,10 +11,23 @@
                 this.updateToken = function () {
                     var deferred = $q.defer();
 
-                    $http.get(fileManagerConfig.tokenUrl)
+                    var pdata = {
+                        client_id: '4de26805-9e54-4bfb-aa36-32770d8c079f',
+                        client_secret: '6adb615a-3b9c-4e0b-8004-f2af7199642e',
+                        grant_type: 'client_credentials'
+                    };
+
+                    $http.post(fileManagerConfig.tokenUrl, pdata)
                         .success(function (data, code) {
                             /*
-                            token prototype:
+                            token prototype v1
+                             token {
+                             'token_type': 'xxx',
+                             'expires_in': 'xxx',
+                             'access_token: 'xxx'
+                             }
+
+                            v2:
                             token {
                             'data' : {
                                 'token_type': 'xxx',
@@ -22,7 +35,7 @@
                                 'access_token: 'xxx'
                             }
                             }*/
-                            var token = data && data.data;
+                            var token = data; //Just support v1 now
                             localStorageService.set(fileManagerConfig.tokenKeyName, {
                                 type: token.token_type,
                                 expire: token.expires_in,
