@@ -13,9 +13,20 @@
 
                     $http.get(fileManagerConfig.tokenUrl)
                         .success(function (data, code) {
+                            /*
+                            token prototype:
+                            token {
+                            'data' : {
+                                'token_type': 'xxx',
+                                'expires_in': 'xxx',
+                                'access_token: 'xxx'
+                            }
+                            }*/
+                            var token = data && data.data;
                             localStorageService.set(fileManagerConfig.tokenKeyName, {
-                                key: data.key,
-                                value: data.value,
+                                type: token.token_type,
+                                expire: token.expires_in,
+                                access_token: token.access_token,
                                 valid: true
                             });
                             deferred.resolve(data);
