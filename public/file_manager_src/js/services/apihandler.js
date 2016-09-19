@@ -69,7 +69,7 @@
                     tokenUpdate.getTokenSync().then(
                         function (token) {
                             var url = apiUrl + '/' + pkgId + '/folder/' + folderId;
-                            $http.get(url).success(function (data, code) {
+                            $http.get(url, self.buildTokenConfig(token)).success(function (data, code) {
                                 dfHandler(data, deferred, code);
                             }).error(function (data, code) {
                                 dfHandler(data, deferred, code, 'Unknown error listing, check the response');
