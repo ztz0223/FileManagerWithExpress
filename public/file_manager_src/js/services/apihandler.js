@@ -87,13 +87,7 @@
 
                     tokenUpdate.getTokenSync().then(
                         function (token) {
-                            var config = {
-                                headers: {
-                                    'Authentication': token.type + ' ' + token.access_token
-                                }
-                            };
-
-                            $http.get(apiUrl, config).success(function (data, code) {
+                            $http.get(apiUrl, self.buildTokenConfig(token)).success(function (data, code) {
                                 // Set the type of the file as 'pkg' by force
                                 data.items.forEach(function (item) {
                                     item.type = 'pkg';
@@ -105,6 +99,9 @@
                             })['finally'](function () {
                                 self.inprocess = false;
                             });
+                        },
+                        function () {
+                            self.inprocess = false;
                         }
                     );
 
