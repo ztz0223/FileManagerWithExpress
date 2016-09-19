@@ -417,16 +417,23 @@
                      * For the root cause: $http.get is a shortcut method for $http({ method: 'GET' }), and expects the URL as the first parameter.
                      */
                     var url = self.buildDownloadUrl(apiUrl, toPackageId, toFileId);
-                    $http.get(url, config).success(function (data) {
-                        var bin = new $window.Blob([data]);
-                        deferred.resolve(data);
-                        // Using file-saver library to handle saving work.
-                        saveAs(bin, toFilename);
-                    }).error(function (data, code) {
-                        self.deferredHandler(data, deferred, code, $translate.instant('error_downloading'));
-                    })['finally'](function () {
-                        self.inprocess = false;
-                    });
+                    tokenUpdate.getTokenSync().then(
+                        function (token) {
+                            $http.get(url, self.buildTokenConfig(token)).success(function (data) {
+                                var bin = new $window.Blob([data]);
+                                deferred.resolve(data);
+                                // Using file-saver library to handle saving work.
+                                saveAs(bin, toFilename);
+                            }).error(function (data, code) {
+                                self.deferredHandler(data, deferred, code, $translate.instant('error_downloading'));
+                            })['finally'](function () {
+                                self.inprocess = false;
+                            });
+                        },
+                        function () {
+                            self.inprocess = false;
+                        }
+                    );
                     return deferred.promise;
                 };
 
@@ -457,35 +464,42 @@
                 ApiHandler.prototype.downloadMultiple = function (apiUrl, toPackageId, items) {
                     var self = this;
 
-                    var downloadSingle = function (item) {
+                    tokenUpdate.getTokenSync().then(
+                        function (token) {
+                            var downloadSingle = function (item) {
 
-                        var toFilename = item.model && item.model.name || 'DownloadFIle';
-                        var deferred = $q.defer();
-                        var url = self.buildDownloadUrl(apiUrl, toPackageId, null, item);
+                                var toFilename = item.model && item.model.name || 'DownloadFIle';
+                                var deferred = $q.defer();
+                                var url = self.buildDownloadUrl(apiUrl, toPackageId, null, item);
 
-                        $http.get(url).success(function (data) {
-                            var bin = new $window.Blob([data]);
-                            deferred.resolve({status: '200'});
-                            saveAs(bin, toFilename);
-                        }).error(function (data, code) {
-                            deferred.reject(data, code);
-                        });
+                                $http.get(url).success(function (data) {
+                                    var bin = new $window.Blob([data]);
+                                    deferred.resolve({status: '200'});
+                                    saveAs(bin, toFilename);
+                                }).error(function (data, code) {
+                                    deferred.reject(data, code);
+                                });
 
-                        return deferred.promise;
-                    };
+                                return deferred.promise;
+                            };
 
-                    var deferred = $q.defer();
+                            var deferred = $q.defer();
 
-                    self.inprocess = true;
-                    self.handleMultipleItems(items, downloadSingle).then(function (result) {
-                            deferred.resolve(result);
+                            self.inprocess = true;
+                            self.handleMultipleItems(items, downloadSingle).then(function (result) {
+                                    deferred.resolve(result);
+                                },
+                                function (data, code) {
+                                    self.deferredHandler(data, deferred, code, $translate.instant('error_downloading'));
+                                }
+                            )['finally'](function () {
+                                self.inprocess = false;
+                            });
                         },
-                        function (data, code) {
-                            self.deferredHandler(data, deferred, code, $translate.instant('error_downloading'));
+                        function () {
+                            self.inprocess = false;
                         }
-                    )['finally'](function () {
-                        self.inprocess = false;
-                    });
+                    );
 
                     return deferred.promise;
                 };
