@@ -47,6 +47,17 @@
                     return deferred.resolve(data);
                 };
 
+                ApiHandler.prototype.buildTokenConfig = function (token) {
+                    var config = {};
+                    if (token) {
+                        config.headers = {
+                            'Authentication': token.type + ' ' + token.access_token
+                        };
+                    }
+
+                    return config;
+                };
+
                 ApiHandler.prototype.list = function (apiUrl, pkgId, folderId, path, customDeferredHandler) {
                     var self = this;
                     var dfHandler = customDeferredHandler || self.deferredHandler;
