@@ -326,13 +326,20 @@
 
                     self.inprocess = true;
                     self.error = '';
-                    $http.post(apiUrl, data).success(function (data, code) {
-                        self.deferredHandler(data, deferred, code);
-                    }).error(function (data, code) {
-                        self.deferredHandler(data, deferred, code, $translate.instant('error_getting_content'));
-                    })['finally'](function () {
-                        self.inprocess = false;
-                    });
+                    tokenUpdate.getTokenSync().then(
+                        function (token) {
+                            $http.post(apiUrl, self.buildTokenConfig(token), data).success(function (data, code) {
+                                self.deferredHandler(data, deferred, code);
+                            }).error(function (data, code) {
+                                self.deferredHandler(data, deferred, code, $translate.instant('error_getting_content'));
+                            })['finally'](function () {
+                                self.inprocess = false;
+                            });
+                        },
+                        function () {
+                            self.inprocess = false;
+                        }
+                    );
                     return deferred.promise;
                 };
 
