@@ -66,14 +66,20 @@
                     self.inprocess = true;
                     self.error = '';
 
-                    var url = apiUrl + '/' + pkgId + '/folder/' + folderId;
-                    $http.get(url).success(function (data, code) {
-                        dfHandler(data, deferred, code);
-                    }).error(function (data, code) {
-                        dfHandler(data, deferred, code, 'Unknown error listing, check the response');
-                    })['finally'](function () {
-                        self.inprocess = false;
-                    });
+                    tokenUpdate.getTokenSync().then(
+                        function (token) {
+                            var url = apiUrl + '/' + pkgId + '/folder/' + folderId;
+                            $http.get(url).success(function (data, code) {
+                                dfHandler(data, deferred, code);
+                            }).error(function (data, code) {
+                                dfHandler(data, deferred, code, 'Unknown error listing, check the response');
+                            })['finally'](function () {
+                                self.inprocess = false;
+                            });
+                        },
+                        function () {
+                            self.inprocess = false;
+                        });
                     return deferred.promise;
                 };
 
