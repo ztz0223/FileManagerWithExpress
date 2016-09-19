@@ -167,14 +167,14 @@
                     var url = apiUrl;
                     var type = item.model.type;
 
-                    if(type === 'pkg') {
+                    if (type === 'pkg') {
                         url = apiUrl + '/' + item.model.id;
                     }
                     else if (type === 'dir') {
-                        url = apiUrl + '/' + packageId  + '/folder/' + item.model.id;
+                        url = apiUrl + '/' + packageId + '/folder/' + item.model.id;
                     }
                     else if (type === 'file') {
-                        url = apiUrl + '/' + packageId  + '/file/' + item.model.id;
+                        url = apiUrl + '/' + packageId + '/file/' + item.model.id;
                     }
 
                     return url;
@@ -184,7 +184,7 @@
                     var url = apiUrl;
 
                     // If package id same as parent id, means under package
-                    if(packageId === parentId) {
+                    if (packageId === parentId) {
                         url = apiUrl + '/' + packageId + '/file/' + uuid4.generate();
                     }
                     else {
@@ -197,11 +197,11 @@
                 ApiHandler.prototype.buildDownloadUrl = function (apiUrl, packageId, fileId, item) {
                     var url;
 
-                    if(item && item.model && item.model.id) {
-                        url =  apiUrl + '/' + packageId + '/file/' + item.model.id;
+                    if (item && item.model && item.model.id) {
+                        url = apiUrl + '/' + packageId + '/file/' + item.model.id;
                     }
                     else {
-                        url =  apiUrl + '/' + packageId + '/file/' + fileId;
+                        url = apiUrl + '/' + packageId + '/file/' + fileId;
                     }
                     return url;
                 };
@@ -257,51 +257,61 @@
                     self.progress = 0;
                     self.error = '';
 
-                    var uploadFn = function (items) {
-                        var allProm = [];
-                        items.forEach(function (item) {
-                            var data = {
-                                user: "None",
-                                file: item
+                    tokenUpdate.getTokenSync().then(
+                        function (token) {
+                            var tokenConfig = self.buildTokenConfig(token);
+                            var uploadFn = function (items) {
+                                var allProm = [];
+                                items.forEach(function (item) {
+                                    var data = {
+                                        user: "None",
+                                        file: item
+                                    };
+
+                                    var url = self.buildUploadUrl(apiUrl, packageId, parentId);
+                                    allProm.push(Upload.upload({
+                                        url: url,
+                                        config: tokenConfig,
+                                        data: data
+                                    }));
+                                });
+
+                                self.progress = 51; // Random number for progress
+                                return $q.all(allProm);
                             };
 
-                            var url = self.buildUploadUrl(apiUrl, packageId, parentId);
-                            allProm.push(Upload.upload({
-                                url: url,
-                                data: data
-                            }));
-                        });
+                            if (files && files.length) {
 
-                        self.progress = 51; // Random number for progress
-                        return $q.all(allProm);
-                    };
+                                // Set the timer 1s to update the progress bar
+                                var timer = $interval(function () {
+                                    var progress = self.progress;
+                                    if (progress < 99) {
+                                        progress += Math.ceil(Math.random() * 10);
+                                    }
+                                    self.progress = (progress > 99) ? 99 : progress;
+                                }, 1000);
 
-                    if (files && files.length) {
-
-                        // Set the timer 1s to update the progress bar
-                        var timer = $interval(function () {
-                            var progress = self.progress;
-                            if (progress < 99) {
-                                progress += Math.ceil(Math.random() * 10);
+                                var data = {};
+                                uploadFn(files).then(function (result) {
+                                    data.status = result[0].status || 200;
+                                    data.statusText = result[0].statusText;
+                                    self.deferredHandler(data, deferred, data.status);
+                                }, function (data) {
+                                    data.status = result.status || 404;
+                                    data.result.error = result.statusText;
+                                    self.deferredHandler(data, deferred, data.status, $translate.instant('Unknown error uploading files'));
+                                })['finally'](function () {
+                                    self.inprocess = false;
+                                    self.progress = 0;
+                                    $interval.cancel(timer);
+                                });
                             }
-                            self.progress = (progress > 99) ? 99 : progress;
-                        }, 1000);
-
-                        var data = {};
-                        uploadFn(files).then(function (result) {
-                            data.status = result[0].status || 200;
-                            data.statusText = result[0].statusText;
-                            self.deferredHandler(data, deferred, data.status);
-                        }, function (data) {
-                            data.status = result.status || 404;
-                            data.result.error = result.statusText;
-                            self.deferredHandler(data, deferred, data.status, $translate.instant('Unknown error uploading files'));
-                        })['finally'](function () {
+                        },
+                        function () {
                             self.inprocess = false;
                             self.progress = 0;
-                            $interval.cancel(timer);
-                        });
-                    }
+                        }
+                    );
 
                     return deferred.promise;
                 };
@@ -453,7 +463,7 @@
                     var deferred = $q.defer();
 
                     self.inprocess = true;
-                    self.handleMultipleItems(items, downloadSingle).then( function (result) {
+                    self.handleMultipleItems(items, downloadSingle).then(function (result) {
                             deferred.resolve(result);
                         },
                         function (data, code) {
