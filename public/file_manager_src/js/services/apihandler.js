@@ -213,31 +213,39 @@
                     self.inprocess = true;
                     self.error = '';
 
-                    var httpFn = function (items) {
-                        var allProm = [];
-                        items.forEach(function (item) {
-                            var url = self.buildDeleteUrl(apiUrl, packageId, item);
-                            allProm.push($http.delete(url));
-                        });
+                    tokenUpdate.getTokenSync().then(
+                        function (token) {
+                            var config = self.buildTokenConfig(token);
+                            var httpFn = function (items) {
+                                var allProm = [];
+                                items.forEach(function (item) {
+                                    var url = self.buildDeleteUrl(apiUrl, packageId, item);
+                                    allProm.push($http.delete(url, config));
+                                });
 
-                        return $q.all(allProm);
-                    };
+                                return $q.all(allProm);
+                            };
 
-                    var data = {};
-                    httpFn(items)
-                        .then(function (result) {
-                                data.status = result[0].status || 200;
-                                data.statusText = result[0].statusText;
-                                self.deferredHandler(data, deferred, data.status);
-                            },
-                            function (result) {
-                                data.status = result.status || 404;
-                                data.result.error = result.statusText;
-                                self.deferredHandler(data, deferred, data.status, $translate.instant('error_deleting'));
-                            })
-                        ['finally'](function () {
-                        self.inprocess = false;
-                    });
+                            var data = {};
+                            httpFn(items).then(
+                                function (result) {
+                                    data.status = result[0].status || 200;
+                                    data.statusText = result[0].statusText;
+                                    self.deferredHandler(data, deferred, data.status);
+                                },
+                                function (result) {
+                                    data.status = result.status || 404;
+                                    data.result.error = result.statusText;
+                                    self.deferredHandler(data, deferred, data.status, $translate.instant('error_deleting'));
+                                })
+                                ['finally'](function () {
+                                self.inprocess = false;
+                            });
+                        },
+                        function () {
+                            self.inprocess = false;
+                        }
+                    );
 
                     return deferred.promise;
                 };
