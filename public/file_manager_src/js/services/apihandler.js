@@ -79,6 +79,12 @@
                         },
                         function () {
                             self.inprocess = false;
+                            var data = {
+                                result : {
+                                    error: 'Get_token_failed'
+                                }
+                            };
+                            self.deferredHandler(data, deferred, code, $translate.instant('error_creating_package'));
                         });
                     return deferred.promise;
                 };
@@ -108,6 +114,12 @@
                         },
                         function () {
                             self.inprocess = false;
+                            var data = {
+                                result : {
+                                    error: 'Get_token_failed'
+                                }
+                            };
+                            self.deferredHandler(data, deferred, code, $translate.instant('error_creating_package'));
                         }
                     );
 
@@ -244,6 +256,12 @@
                         },
                         function () {
                             self.inprocess = false;
+                            var data = {
+                                result : {
+                                    error: 'Get_token_failed'
+                                }
+                            };
+                            self.deferredHandler(data, deferred, code, $translate.instant('error_creating_package'));
                         }
                     );
 
@@ -271,7 +289,7 @@
                                     var url = self.buildUploadUrl(apiUrl, packageId, parentId);
                                     allProm.push(Upload.upload({
                                         url: url,
-                                        config: tokenConfig,
+                                        headers: tokenConfig.headers,
                                         data: data
                                     }));
                                 });
@@ -310,6 +328,12 @@
                         function () {
                             self.inprocess = false;
                             self.progress = 0;
+                            var data = {
+                                result : {
+                                    error: 'Get_token_failed'
+                                }
+                            };
+                            self.deferredHandler(data, deferred, code, $translate.instant('error_creating_package'));
                         }
                     );
 
@@ -338,6 +362,12 @@
                         },
                         function () {
                             self.inprocess = false;
+                            var data = {
+                                result : {
+                                    error: 'Get_token_failed'
+                                }
+                            };
+                            self.deferredHandler(data, deferred, code, $translate.instant('error_creating_package'));
                         }
                     );
                     return deferred.promise;
@@ -367,6 +397,12 @@
                         },
                         function () {
                             self.inprocess = false;
+                            var data = {
+                                result : {
+                                    error: 'Get_token_failed'
+                                }
+                            };
+                            self.deferredHandler(data, deferred, code, $translate.instant('error_creating_package'));
                         }
                     );
                     return deferred.promise;
@@ -432,6 +468,12 @@
                         },
                         function () {
                             self.inprocess = false;
+                            var data = {
+                                result : {
+                                    error: 'Get_token_failed'
+                                }
+                            };
+                            self.deferredHandler(data, deferred, code, $translate.instant('error_creating_package'));
                         }
                     );
                     return deferred.promise;
@@ -463,6 +505,7 @@
 
                 ApiHandler.prototype.downloadMultiple = function (apiUrl, toPackageId, items) {
                     var self = this;
+                    var deferred = $q.defer();
 
                     tokenUpdate.getTokenSync().then(
                         function (token) {
@@ -472,7 +515,7 @@
                                 var deferred = $q.defer();
                                 var url = self.buildDownloadUrl(apiUrl, toPackageId, null, item);
 
-                                $http.get(url).success(function (data) {
+                                $http.get(url, self.buildTokenConfig(token)).success(function (data) {
                                     var bin = new $window.Blob([data]);
                                     deferred.resolve({status: '200'});
                                     saveAs(bin, toFilename);
@@ -482,8 +525,6 @@
 
                                 return deferred.promise;
                             };
-
-                            var deferred = $q.defer();
 
                             self.inprocess = true;
                             self.handleMultipleItems(items, downloadSingle).then(function (result) {
@@ -498,6 +539,12 @@
                         },
                         function () {
                             self.inprocess = false;
+                            var data = {
+                                result : {
+                                    error: 'Get_token_failed'
+                                }
+                            };
+                            self.deferredHandler(data, deferred, code, $translate.instant('error_creating_package'));
                         }
                     );
 
@@ -584,7 +631,7 @@
                     self.error = '';
                     tokenUpdate.getTokenSync().then(
                         function (token) {
-                            $http.post(url, self.buildTokenConfig(token), data).success(function (data, code) {
+                            $http.post(url, data, self.buildTokenConfig(token)).success(function (data, code) {
                                 self.deferredHandler(data, deferred, code);
                             }).error(function (data, code) {
                                 self.deferredHandler(data, deferred, code, $translate.instant('error_creating_folder'));
@@ -594,6 +641,12 @@
                         },
                         function () {
                             self.inprocess = false;
+                            var data = {
+                                result : {
+                                    error: 'Get_token_failed'
+                                }
+                            };
+                            self.deferredHandler(data, deferred, code, $translate.instant('error_creating_package'));
                         }
                     );
 
@@ -613,7 +666,7 @@
                     self.error = '';
                     tokenUpdate.getTokenSync().then(
                         function (token) {
-                            $http.post(apiUrl, data).success(function (data, code) {
+                            $http.post(apiUrl, data, self.buildTokenConfig(token)).success(function (data, code) {
                                 self.deferredHandler(data, deferred, code);
                             }).error(function (data, code) {
                                 self.deferredHandler(data, deferred, code, $translate.instant('error_creating_package'));
@@ -623,6 +676,12 @@
                         },
                         function () {
                             self.inprocess = false;
+                            var data = {
+                              result : {
+                                  error: 'Get_token_failed'
+                              }
+                            };
+                            self.deferredHandler(data, deferred, code, $translate.instant('error_creating_package'));
                         }
                     );
 

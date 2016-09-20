@@ -100,7 +100,8 @@
             new_folder: 'New folder',
             new_package: 'New package',
             package_name: 'Package name',
-            download_multi_file: 'Download multiple files'
+            download_multi_file: 'Download multiple files',
+            Get_token_failed: 'Get token failed'
         });
 
         $translateProvider.translations('zh', {
@@ -200,7 +201,8 @@
             new_folder: '新文件夹',
             new_package: '新工程',
             package_name: '工程名',
-            download_multi_file: '下载多个文件'
+            download_multi_file: '下载多个文件',
+            Get_token_failed: '获取令牌失败'
         });
     }]);
 })(angular);
