@@ -27,7 +27,7 @@
             tokenUrl: xSite + 'token',
 
             tokenKeyName: 'FileManagerToken',
-            tokenUpdateInterval: 30000,
+            tokenUpdateInterval: 1200000,
 
             searchForm: true,
             sidebar: true,
