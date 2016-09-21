@@ -441,3 +441,12 @@ table th > a:focus {
     height: 18px;
     line-height: 100%;
 }
+
+.bottom-show {
+    bottom: 0;
+    position: absolute;
+}
+
+.table-no-margin {
+    margin-bottom: 0;
+}
