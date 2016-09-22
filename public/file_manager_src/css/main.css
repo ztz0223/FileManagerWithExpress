@@ -448,5 +448,5 @@ table th > a:focus {
 }
 
 .table-no-margin {
-    margin-bottom: 0;
+    margin-bottom: 20px;
 }
