@@ -101,7 +101,8 @@
             new_package: 'New package',
             package_name: 'Package name',
             download_multi_file: 'Download multiple files',
-            Get_token_failed: 'Get token failed'
+            Get_token_failed: 'Get token failed',
+            convert_status: 'convertion status'
         });
 
         $translateProvider.translations('zh', {
@@ -202,7 +203,8 @@
             new_package: '新工程',
             package_name: '工程名',
             download_multi_file: '下载多个文件',
-            Get_token_failed: '获取令牌失败'
+            Get_token_failed: '获取令牌失败',
+            convert_status: '转换状态'
         });
     }]);
 })(angular);

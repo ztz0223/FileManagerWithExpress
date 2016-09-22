@@ -20,6 +20,8 @@
             $scope.fileList = [];
             $scope.temps = [];
 
+            $scope.bShowConvertionStatus = false;
+
             $scope.$watch('temps', function () {
                 if ($scope.singleSelection()) {
                     $scope.temp = $scope.singleSelection();
@@ -34,6 +36,10 @@
                 $scope.temps = [];
                 $scope.query = '';
                 $rootScope.selectedModalPath = $scope.fileNavigator.currentPath;
+            };
+
+            $scope.setConvertionStatus = function () {
+                $scope.bShowConvertionStatus = !$scope.bShowConvertionStatus;
             };
 
             $scope.setTemplate = function (name) {
