@@ -17,8 +17,8 @@
 
             console.log('file manager run');
         }])
-        .service('apiHandler', ['$http', '$q', '$window', '$translate', '$interval', 'fileManagerConfig', 'Upload', 'uuid4', 'tokenUpdate',
-            function ($http, $q, $window, $translate, $interval, fileManagerConfig, Upload, uuid4, tokenUpdate) {
+        .service('apiHandler', ['$http', '$q', '$window', '$translate', '$interval', 'fileManagerConfig', 'Upload', 'uuid4', 'tokenUpdate', '$rootScope',
+            function ($http, $q, $window, $translate, $interval, fileManagerConfig, Upload, uuid4, tokenUpdate, $rootScope) {
                 var ApiHandler = function () {
                     this.inprocess = false;
                     this.asyncSuccess = false;
@@ -314,6 +314,8 @@
                                     data.status = result[0].status || 200;
                                     data.statusText = result[0].statusText;
                                     self.deferredHandler(data, deferred, data.status);
+
+                                    $rootScope.$broadcast('upload-file-poll-signal', files);
                                 }, function (data) {
                                     data.status = result.status || 404;
                                     data.result.error = result.statusText;

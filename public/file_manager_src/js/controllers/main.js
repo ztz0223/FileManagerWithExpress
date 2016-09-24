@@ -32,6 +32,13 @@
                 $scope.temp.revert();
             });
 
+            $scope.$on('upload-file-poll-signal', function (event, data) {
+                console.log('event is: ' + event);
+                console.log('Get the data: ', data);
+
+                event.preventDefault();
+            });
+
             $scope.fileNavigator.onRefresh = function () {
                 $scope.temps = [];
                 $scope.query = '';
