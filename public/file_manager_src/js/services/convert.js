@@ -28,6 +28,12 @@
 
                             var tokenConfig = tokenUpdate.buildTokenConfig(token);
                             fileList.forEach(function (file) {
+
+                                // Just update the not finished items
+                                if(file.convertOver) {
+                                    return;
+                                }
+
                                 var apiUrl = self.buildConvertUrl(fileManagerConfig.convertStatusUrl, file.projectId, file.id);
 
                                 $http.get(apiUrl, tokenConfig).success(function (data, code) {
@@ -46,7 +52,7 @@
                     );
                 };
 
-                this.launchUpdate = function (fileList) {
+                this.launchUpdateConvertStatusTimer = function (fileList) {
                     var self = this;
                     $interval(function () {
 

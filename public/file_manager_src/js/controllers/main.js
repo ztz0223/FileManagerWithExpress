@@ -478,7 +478,7 @@
             $scope.isWindows = getQueryParam('server') === 'Windows';
             $scope.fileNavigator.refresh();
 
-            convertHandler.launchUpdate($scope.convertingList);
+            convertHandler.launchUpdateConvertStatusTimer($scope.convertingList);
 
         }]);
 })(angular, jQuery, _);
