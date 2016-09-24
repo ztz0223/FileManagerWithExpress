@@ -315,8 +315,20 @@
                                     data.statusText = result[0].statusText;
                                     self.deferredHandler(data, deferred, data.status);
 
-                                    $rootScope.$broadcast('upload-file-poll-signal', files);
+                                    var uploadedFiles = [];
+                                    result.forEach(function (item) {
+                                        uploadedFiles.push({
+                                                id: item.data.fileId,
+                                                projectId: packageId,
+                                                name: item.data.fileName,
+                                                convertOver: false
+                                            });
+                                    });
+
+                                    $rootScope.$broadcast('upload-file-poll-signal', uploadedFiles);
                                 }, function (data) {
+
+                                    //Maybe need to handle parts of the uploaded file
                                     data.status = result.status || 404;
                                     data.result.error = result.statusText;
                                     self.deferredHandler(data, deferred, data.status, $translate.instant('Unknown error uploading files'));
