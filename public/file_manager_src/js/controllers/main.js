@@ -22,7 +22,7 @@
 
             $scope.convertingList = [];
             $scope.convertingPageList = [];
-            $scope.convertingFirstPage = [];
+            $scope.convertingShownPage = [];
             $scope.numOfOnePage = fileManagerConfig.numOfOnePage || 5;
             $scope.bShowConvertionStatus = false;
             $scope.curPage = 1; // page list from 1, then 2, 3, 4 ...
@@ -42,6 +42,11 @@
                     $scope.convertingList.unshift(item);
                 });
 
+                var index = 1;
+                _.map($scope.convertingList, function (item) {
+                    item.index = index++;
+                });
+
                 $scope.buildConvertingPageList();
             };
 
@@ -56,7 +61,7 @@
                 }
                 else {
                     if($scope.convertingPageList.length >= $scope.curPage) {
-                        $scope.convertingFirstPage = _.clone($scope.convertingPageList[$scope.curPage - 1], true);
+                        $scope.convertingShownPage = _.clone($scope.convertingPageList[$scope.curPage - 1], true);
                     }
                     else {
                         $scope.curPage = 1;
@@ -68,7 +73,7 @@
             $scope.changeConvertingListPage = function (page) {
                 if(page <= $scope.convertingPageList.length) {
                     $scope.curPage = page;
-                    $scope.convertingFirstPage = _.clone($scope.convertingPageList[$scope.curPage - 1], true);
+                    $scope.convertingShownPage = _.clone($scope.convertingPageList[$scope.curPage - 1], true);
                 }
             };
 
