@@ -1,5 +1,5 @@
 <div class="col-sm-12 bottom-show" ng-show="bShowConvertionStatus">
-    <H1 class="text-center bg-info ">Center aligned text.</H1>
+    <H1 class="text-center bg-info ">{{'file_convert_list' | translate}}</H1>
 
     <table class="table table-no-margin table-responsive text-center">
         <thead>
@@ -96,19 +96,16 @@
     <div class="btn-toolbar pull-right" role="toolbar">
         <div class="btn-group dropup">
             <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
-                Action <span class="caret"></span>
+                {{"Choose_page" | translate}}
+                <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Separated link</a></li>
+                <li><a href="" ng-repeat="item in convertingPageList" ng-click="changeConvertingListPage($index + 1)">{{$index + 1}}</a></li>
             </ul>
         </div>
 
         <div class="btn-group">
-            <button type="button" class="btn btn-danger">Clear Over</button>
+            <button type="button" class="btn btn-danger" ng-click="removeFinishedFiles()">{{"Clear_finished" | translate}}</button>
         </div>
     </div>
 

@@ -102,7 +102,10 @@
             package_name: 'Package name',
             download_multi_file: 'Download multiple files',
             Get_token_failed: 'Get token failed',
-            convert_status: 'convertion status'
+            convert_status: 'convertion status',
+            Choose_page: 'Choose page',
+            Clear_finished: 'Clear Finished',
+            file_convert_list: 'File convertion list'
         });
 
         $translateProvider.translations('zh', {
@@ -204,7 +207,10 @@
             package_name: '工程名',
             download_multi_file: '下载多个文件',
             Get_token_failed: '获取令牌失败',
-            convert_status: '转换状态'
+            convert_status: '转换状态',
+            Choose_page: '选择页',
+            Clear_finished: '清理完成相项',
+            file_convert_list: '文件转换列表'
         });
     }]);
 })(angular);

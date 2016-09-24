@@ -21,8 +21,11 @@
             $scope.temps = [];
 
             $scope.convertingList = [];
+            $scope.convertingPageList = [];
+            $scope.convertingFirstPage = [];
             $scope.numOfOnePage = fileManagerConfig.numOfOnePage || 5;
             $scope.bShowConvertionStatus = false;
+            $scope.curPage = 1; // page list from 1, then 2, 3, 4 ...
 
             $scope.$watch('temps', function () {
                 if ($scope.singleSelection()) {
@@ -38,12 +41,43 @@
                 _.forEach(data, function (item) {
                     $scope.convertingList.unshift(item);
                 });
+
+                $scope.buildConvertingPageList();
+            };
+
+            $scope.buildConvertingPageList = function () {
+                $scope.convertingPageList = _.chunk($scope.convertingList, $scope.numOfOnePage);
+                console.log('Page list count: ' + $scope.convertingPageList.length);
+
+                // deep copy
+                if($scope.convertingPageList.length === 0) {
+                    $scope.curPage = 1;
+                    $scope.convertingPageList = [];
+                }
+                else {
+                    if($scope.convertingPageList.length >= $scope.curPage) {
+                        $scope.convertingFirstPage = _.clone($scope.convertingPageList[$scope.curPage - 1], true);
+                    }
+                    else {
+                        $scope.curPage = 1;
+                        $scope.convertingPageList = _.clone($scope.convertingPageList[0], true);
+                    }
+                }
+            };
+
+            $scope.changeConvertingListPage = function (page) {
+                if(page <= $scope.convertingPageList.length) {
+                    $scope.curPage = page;
+                    $scope.convertingFirstPage = _.clone($scope.convertingPageList[$scope.curPage - 1], true);
+                }
             };
 
             $scope.removeFinishedFiles = function () {
                 _.remove($scope.convertingList, function (item) {
                     return item.convertOver === true;
                 });
+
+                $scope.buildConvertingPageList();
             };
 
             $scope.$on('upload-file-poll-signal', function (event, data) {
