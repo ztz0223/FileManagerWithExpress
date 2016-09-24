@@ -1,92 +1,36 @@
 <div class="col-sm-12 bottom-show" ng-show="bShowConvertionStatus">
     <H1 class="text-center bg-info ">{{'file_convert_list' | translate}}</H1>
 
-    <table class="table table-no-margin table-responsive text-center">
+    <table class="table table-no-margin table-responsive text-center table-condensed">
         <thead>
         <tr>
             <th class="text-center">
-                编号
+                {{'file_convert_index' | translate}}
             </th>
             <th class="text-center">
-                产品
+                {{'file_convert_project' | translate}}
             </th>
             <th class="text-center">
-                交付时间
+                {{'file_convert_filename' | translate}}
             </th>
             <th class="text-center">
-                状态
+                {{'file_convert_status' | translate}}
             </th>
         </tr>
         </thead>
         <tbody>
-        <tr>
+        <tr ng-repeat="item in convertingShownPage" ng-class="{true: 'success', false: 'warning'}[item.convertOver]">
             <td>
-                1
+                {{item.index}}
             </td>
             <td>
-                TB - Monthly
+                {{item.projectId}}
             </td>
             <td>
-                01/04/2012
+                {{item.name}}
             </td>
             <td>
-                Default
-            </td>
-        </tr>
-        <tr class="success">
-            <td>
-                1
-            </td>
-            <td>
-                TB - Monthly
-            </td>
-            <td>
-                01/04/2012
-            </td>
-            <td>
-                Approved
-            </td>
-        </tr>
-        <tr class="error">
-            <td>
-                2
-            </td>
-            <td>
-                TB - Monthly
-            </td>
-            <td>
-                02/04/2012
-            </td>
-            <td>
-                Declined
-            </td>
-        </tr>
-        <tr class="warning">
-            <td>
-                3
-            </td>
-            <td>
-                TB - Monthly
-            </td>
-            <td>
-                03/04/2012
-            </td>
-            <td>
-                Pending
-            </td>
-        </tr>
-        <tr class="info">
-            <td>
-                4
-            </td>
-            <td>
-                TB - Monthly
-            </td>
-            <td>
-                04/04/2012
-            </td>
-            <td>
-                Call in to confirm
+                {{item.convertOver ? 'file_in_process' : 'file_finished'}}
             </td>
         </tr>
         </tbody>
@@ -100,12 +44,15 @@
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-                <li><a href="" ng-repeat="item in convertingPageList" ng-click="changeConvertingListPage($index + 1)">{{$index + 1}}</a></li>
+                <li><a href="" ng-repeat="item in convertingPageList" ng-click="changeConvertingListPage($index + 1)">{{$index
+                    + 1}}</a></li>
             </ul>
         </div>
 
         <div class="btn-group">
-            <button type="button" class="btn btn-danger" ng-click="removeFinishedFiles()">{{"Clear_finished" | translate}}</button>
+            <button type="button" class="btn btn-danger" ng-click="removeFinishedFiles()">{{"Clear_finished" |
+                translate}}
+            </button>
         </div>
     </div>
 

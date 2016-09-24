@@ -105,7 +105,13 @@
             convert_status: 'convertion status',
             Choose_page: 'Choose page',
             Clear_finished: 'Clear Finished',
-            file_convert_list: 'File convertion list'
+            file_convert_list: 'File convertion list',
+            file_convert_index: 'index',
+            file_convert_project: 'project',
+            file_convert_filename: 'file name',
+            file_convert_status: 'status',
+            file_in_process: 'in process...',
+            file_finished: 'finished'
         });
 
         $translateProvider.translations('zh', {
@@ -210,7 +216,13 @@
             convert_status: '转换状态',
             Choose_page: '选择页',
             Clear_finished: '清理完成相项',
-            file_convert_list: '文件转换列表'
+            file_convert_list: '文件转换列表',
+            file_convert_index: '编号',
+            file_convert_project: '项目',
+            file_convert_filename: '文件名',
+            file_convert_status: '状态',
+            file_in_process: '转换中...',
+            file_finished: '转换完成'
         });
     }]);
 })(angular);
