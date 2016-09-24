@@ -1,4 +1,4 @@
-(function (angular, $) {
+(function (angular, $, _) {
     'use strict';
     angular.module('FileManagerApp').controller('FileManagerCtrl', [
         '$scope', '$rootScope', '$window', '$translate', '$interval', 'fileManagerConfig', 'item', 'fileNavigator', 'apiMiddleware',
@@ -20,6 +20,8 @@
             $scope.fileList = [];
             $scope.temps = [];
 
+            $scope.convertingList = [];
+            $scope.numOfOnePage = fileManagerConfig.numOfOnePage || 5;
             $scope.bShowConvertionStatus = false;
 
             $scope.$watch('temps', function () {
@@ -32,9 +34,23 @@
                 $scope.temp.revert();
             });
 
+            $scope.preAddFiles = function (data) {
+                _.forEach(data, function (item) {
+                    $scope.convertingList.unshift(item);
+                });
+            };
+
+            $scope.removeFinishedFiles = function () {
+                _.remove($scope.convertingList, function (item) {
+                    return item.convertOver === true;
+                });
+            };
+
             $scope.$on('upload-file-poll-signal', function (event, data) {
                 console.log('event is: ' + event);
                 console.log('Get the data: ', data);
+
+                $scope.preAddFiles(data);
 
                 event.preventDefault();
             });
@@ -424,4 +440,4 @@
             $scope.fileNavigator.refresh();
 
         }]);
-})(angular, jQuery);
+})(angular, jQuery, _);
