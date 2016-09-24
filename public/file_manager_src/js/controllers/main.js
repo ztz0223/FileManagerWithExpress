@@ -1,8 +1,8 @@
 (function (angular, $, _) {
     'use strict';
     angular.module('FileManagerApp').controller('FileManagerCtrl', [
-        '$scope', '$rootScope', '$window', '$translate', '$interval', 'fileManagerConfig', 'item', 'fileNavigator', 'apiMiddleware',
-        function ($scope, $rootScope, $window, $translate, $interval, fileManagerConfig, Item, FileNavigator, ApiMiddleware) {
+        '$scope', '$rootScope', '$window', '$translate', '$interval', 'fileManagerConfig', 'item', 'fileNavigator', 'apiMiddleware', 'convertHandler',
+        function ($scope, $rootScope, $window, $translate, $interval, fileManagerConfig, Item, FileNavigator, ApiMiddleware, convertHandler) {
 
             var $storage = $window.localStorage;
             $scope.config = fileManagerConfig;
@@ -57,15 +57,15 @@
                 // deep copy
                 if($scope.convertingPageList.length === 0) {
                     $scope.curPage = 1;
-                    $scope.convertingPageList = [];
+                    $scope.convertingShownPage = [];
                 }
                 else {
                     if($scope.convertingPageList.length >= $scope.curPage) {
-                        $scope.convertingShownPage = _.clone($scope.convertingPageList[$scope.curPage - 1], true);
+                        $scope.convertingShownPage = $scope.convertingPageList[$scope.curPage - 1];
                     }
                     else {
                         $scope.curPage = 1;
-                        $scope.convertingPageList = _.clone($scope.convertingPageList[0], true);
+                        $scope.convertingShownPage = $scope.convertingPageList[0];
                     }
                 }
             };
@@ -73,7 +73,7 @@
             $scope.changeConvertingListPage = function (page) {
                 if(page <= $scope.convertingPageList.length) {
                     $scope.curPage = page;
-                    $scope.convertingShownPage = _.clone($scope.convertingPageList[$scope.curPage - 1], true);
+                    $scope.convertingShownPage = $scope.convertingPageList[$scope.curPage - 1];
                 }
             };
 
@@ -477,6 +477,8 @@
             $scope.changeLanguage(getQueryParam('lang'));
             $scope.isWindows = getQueryParam('server') === 'Windows';
             $scope.fileNavigator.refresh();
+
+            convertHandler.launchUpdate($scope.convertingList);
 
         }]);
 })(angular, jQuery, _);

@@ -93,5 +93,15 @@
                     }, fileManagerConfig.tokenUpdateInterval);
                 };
 
+                this.buildTokenConfig = function (token) {
+                    var config = {};
+                    if (token) {
+                        config.headers = {
+                            'Authentication': token.type + ' ' + token.access_token
+                        };
+                    }
+
+                    return config;
+                };
             }]);
 })(angular, $);

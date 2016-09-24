@@ -26,8 +26,11 @@
             projectUrl: xSite + 'projects',
             tokenUrl: xSite + 'token',
 
+            convertStatusUrl: xSite + 'convert',
+
             tokenKeyName: 'FileManagerToken',
             tokenUpdateInterval: 1200000,
+            convertPollInterval: 10000,
 
             searchForm: true,
             sidebar: true,
